@@ -12,6 +12,7 @@
     <groupId>se.yrgo</groupId>
     <artifactId>plantly</artifactId>
     <version>1.0</version>
+    <packaging>pom</packaging>
     <name>plantly</name>
     <description>Crop information service</description>
 
