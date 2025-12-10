@@ -34,9 +34,5 @@ build/
 
 .DS_Store
 
-# other services
-cropservice/
-growthservice/
-
 # database file
 Database.mv.db
