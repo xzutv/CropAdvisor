@@ -56,5 +56,55 @@ public class EnvironmentProfileService {
     }
 
 
+    public void updateProfile(EnvironmentProfile existing, EnvironmentProfile update) {
+        if (update.getSoilType() != null) {
+            existing.setSoilType(update.getSoilType());
+        }
+        if (update.getSunExposure() != null) {
+            existing.setSunExposure(update.getSunExposure());
+        }
+        if (update.getSoilPhMin() > 0) {
+            existing.setSoilPhMin(update.getSoilPhMin());
+        }
+        if (update.getSoilPhMax() > 0) {
+            existing.setSoilPhMax(update.getSoilPhMax());
+        }
+        if (update.getPlantingSeason() != null) {
+            existing.setPlantingSeason(update.getPlantingSeason());
+        }
+        if (update.getHarvestSeason() != null) {
+            existing.setHarvestSeason(update.getHarvestSeason());
+        }
+
+        validateProfile(update);
+    }
+
+    public void validateProfile(EnvironmentProfile profile) {
+        if (profile == null) {
+            throw new IllegalArgumentException("EnvoirmentProfile cannot be null");
+        }
+
+        // Validate pH-nivåer
+        if (profile.getSoilPhMin() < 0 || profile.getSoilPhMin() > 14) {
+            throw new IllegalArgumentException("Soil pH min must be between 0 and 14");
+        }
+
+        if (profile.getSoilPhMax() < 0 || profile.getSoilPhMax() > 14) {
+            throw new IllegalArgumentException("Soil pH max must be between 0 and 14");
+        }
+
+        if (profile.getSoilPhMin() > profile.getSoilPhMax()) {
+            throw new IllegalArgumentException("Soil pH min cannot be greater than max");
+        }
+
+        // Validate required fields
+        if (profile.getSoilType() == null) {
+            throw new IllegalArgumentException("Soil type is required");
+        }
+
+        if (profile.getSunExposure() == null) {
+            throw new IllegalArgumentException("Sun exposure is required");
+        }
+    }
 
 }
