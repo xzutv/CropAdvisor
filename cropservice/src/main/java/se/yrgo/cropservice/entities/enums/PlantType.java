@@ -11,4 +11,5 @@ public enum PlantType {
     GRASS,
     HOUSEPLANT,
     TREE,
+    TROPICAL,
 }
