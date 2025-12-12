@@ -12,7 +12,7 @@
 
 	<artifactId>cropservice</artifactId>
 	<version>1.0</version>
-	<name>cropservice</name>
+	<city>cropservice</city>
 	<description>Crop information service</description>
 
 	<url/>
