@@ -19,7 +19,8 @@ public class Crop {
     @Embedded
     private GrowthRequirements requirements;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+    orphanRemoval = true)
     @JoinColumn(name = "envoirment_profile_id")
     private EnvironmentProfile environmentProfile;
 
