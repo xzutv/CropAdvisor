@@ -31,7 +31,7 @@ public class EnvironmentProfileService {
                 profile.setSoilPhMin(5.0);
                 profile.setSoilPhMax(7.0);
             }
-            case LOAMY -> {
+            case LOAM -> {
                 profile.setSoilPhMin(6.0);
                 profile.setSoilPhMax(7.0);
             }
@@ -84,7 +84,7 @@ public class EnvironmentProfileService {
             throw new IllegalArgumentException("EnvoirmentProfile cannot be null");
         }
 
-        // Validate pH-nivåer
+        // Validate pH-values
         if (profile.getSoilPhMin() < 0 || profile.getSoilPhMin() > 14) {
             throw new IllegalArgumentException("Soil pH min must be between 0 and 14");
         }
