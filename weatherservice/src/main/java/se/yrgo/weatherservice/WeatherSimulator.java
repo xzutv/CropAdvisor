@@ -31,7 +31,7 @@ public class WeatherSimulator {
             weather.setTemp(random.nextDouble(-5, 13));
             weather.setRain(random.nextBoolean());
             weather.setHumidity(random.nextInt(20, 90));
-            weather.setWind(random.nextDouble(5, 25) + "m/s");
+            weather.setWind(random.nextDouble(5, 25));
             weather.setLocation(new Location("Gothenburg", "Sweden"));
             System.out.println(weather);
             weatherRepository.save(weather);

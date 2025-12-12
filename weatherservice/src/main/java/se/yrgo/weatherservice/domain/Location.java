@@ -11,9 +11,6 @@ public class Location {
     private String city;
     private String country;
 
-    @OneToOne(mappedBy = "location")
-    private Weather weather;
-
     public Location(String city, String country) {
         this.city = city;
         this.country = country;
@@ -45,11 +42,5 @@ public class Location {
         this.country = country;
     }
 
-    public Weather getWeather() {
-        return weather;
-    }
 
-    public void setWeather(Weather weather) {
-        this.weather = weather;
-    }
 }
