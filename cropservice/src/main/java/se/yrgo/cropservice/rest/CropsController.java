@@ -12,6 +12,7 @@ import se.yrgo.cropservice.entities.enums.SunExposure;
 import se.yrgo.cropservice.service.CropService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -60,6 +61,18 @@ public class CropsController {
              request.getType(),
              request.getSoilType(),
              request.getSunExposure());
+     return ResponseEntity.ok(crop);
+ }
+
+ @GetMapping("/{id}")
+    public ResponseEntity<Crop> getCropById(@PathVariable Long cropId) {
+     Crop crop = cropService.getCropById(cropId);
+     return ResponseEntity.ok(crop);
+ }
+
+ @GetMapping("/{name}")
+    public ResponseEntity<Optional<Crop>> getCropByName(@PathVariable String name) {
+     var crop = cropService.findCropByName(name);
      return ResponseEntity.ok(crop);
  }
 
