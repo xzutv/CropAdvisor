@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface CropRepository extends JpaRepository<Crop, Long> {
 
-    List<Crop> findByPlantType(PlantType plantType);
+    List<Crop> findByType(PlantType type);
 
     Optional<Crop> findByName(String name);
 

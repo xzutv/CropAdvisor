@@ -1,5 +1,6 @@
 package se.yrgo.cropservice.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.yrgo.cropservice.data.CropRepository;
 import se.yrgo.cropservice.data.EnvoirmentProfileRepository;
@@ -45,7 +46,7 @@ public class CropService {
     }
 
     public List<Crop> findByPlantType(PlantType plantType) {
-        return cropRepository.findByPlantType(plantType);
+        return cropRepository.findByType(plantType);
     }
 
     public Crop createCompleteCropWithProfile(String name,
