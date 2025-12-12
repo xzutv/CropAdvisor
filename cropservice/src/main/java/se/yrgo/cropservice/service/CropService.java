@@ -2,6 +2,7 @@ package se.yrgo.cropservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import se.yrgo.cropservice.data.CropRepository;
 import se.yrgo.cropservice.data.EnvoirmentProfileRepository;
 import se.yrgo.cropservice.entities.Crop;
@@ -15,12 +16,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class CropService {
 
     private final CropRepository cropRepository;
     private final EnvironmentProfileService profileService;
     private final GrowthRequirmentService requirmentService;
 
+    @Autowired
     public CropService(CropRepository cropRepository, EnvironmentProfileService profileService, GrowthRequirmentService requirmentService) {
         this.cropRepository = cropRepository;
         this.profileService = profileService;
