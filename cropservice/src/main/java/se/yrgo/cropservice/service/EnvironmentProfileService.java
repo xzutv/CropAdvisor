@@ -31,7 +31,7 @@ public class EnvironmentProfileService {
                 profile.setSoilPhMin(5.0);
                 profile.setSoilPhMax(7.0);
             }
-            case LOAM -> {
+            case LOAMY -> {
                 profile.setSoilPhMin(6.0);
                 profile.setSoilPhMax(7.0);
             }

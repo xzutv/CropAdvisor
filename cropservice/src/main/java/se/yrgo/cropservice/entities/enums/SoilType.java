@@ -6,5 +6,5 @@ public enum SoilType {
     SILTY, // Smooth, fertile, holds moisture well but compacts easily; willows, ferns, dogwoods
     PEATY, // Dark, high in organic matter, acidic, retains moisture; blueberries, rhododendrons, azaleas
     CHALKY, // Alkaline, often stony, well-draining; thyme, liliacs, lanvender, heathers
-    LOAM, // A balanced mix (sand, silt, clay) offering excellent fertility, drainage, and water retention; Vegetables, fruits, flowers
+    LOAMY, // A balanced mix (sand, silt, clay) offering excellent fertility, drainage, and water retention; Vegetables, fruits, flowers
 }
