@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
-import se.yrgo.growthservice.data.LocalWeatherData;
+import se.yrgo.growthservice.dao.LocalWeatherData;
 import se.yrgo.growthservice.domain.weather.Location;
 import se.yrgo.growthservice.domain.weather.Weather;
 
@@ -38,7 +38,7 @@ public class WeatherClient {
 
         return client.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/models")
+                        .path("/weather-location")
                         .queryParams(params).build())
                 .retrieve()
                 .body(List.class);

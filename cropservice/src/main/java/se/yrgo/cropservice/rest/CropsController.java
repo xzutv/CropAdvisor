@@ -1,5 +1,6 @@
 package se.yrgo.cropservice.rest;
 
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class CropsController {
         this.cropService = cropService;
  }
 
- @GetMapping()
+ @GetMapping("/")
     public ResponseEntity<List<Crop>> getCrops() {
      List<Crop> crops = cropService.getAllCrops();
      return ResponseEntity.ok(crops);
@@ -64,16 +65,9 @@ public class CropsController {
      return ResponseEntity.ok(crop);
  }
 
- @GetMapping("/{id}")
+ @GetMapping("/{cropId}")
     public ResponseEntity<Crop> getCropById(@PathVariable Long cropId) {
      Crop crop = cropService.getCropById(cropId);
      return ResponseEntity.ok(crop);
  }
-
- @GetMapping("/{name}")
-    public ResponseEntity<Optional<Crop>> getCropByName(@PathVariable String name) {
-     var crop = cropService.findCropByName(name);
-     return ResponseEntity.ok(crop);
- }
-
 }

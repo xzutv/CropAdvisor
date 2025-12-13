@@ -11,6 +11,15 @@ public class Weather {
 
     private Location location;
 
+    public Weather(Double temp, int humidity, String wind, Boolean rain, LocalDate timestamp, Location location) {
+        this.temp = temp;
+        this.humidity = humidity;
+        this.wind = wind;
+        this.rain = rain;
+        this.timestamp = timestamp;
+        this.location = location;
+    }
+
     public Double getTemp() {
         return temp;
     }
