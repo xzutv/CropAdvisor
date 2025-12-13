@@ -13,7 +13,7 @@
     <artifactId>plantly</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
-    <name>plantly</name>
+    <city>plantly</city>
     <description>Crop information service</description>
 
     <properties>
