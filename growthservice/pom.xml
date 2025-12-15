@@ -13,7 +13,7 @@
 
 	<artifactId>growthservice</artifactId>
 	<version>1.0</version>
-	<city>growthservice</city>
+	<name>growthservice</name>
 	<description>Growth advice service</description>
 
 	<url/>
