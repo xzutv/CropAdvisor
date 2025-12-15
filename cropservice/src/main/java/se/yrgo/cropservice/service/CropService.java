@@ -10,8 +10,10 @@ import se.yrgo.cropservice.entities.GrowthRequirements;
 import se.yrgo.cropservice.entities.enums.PlantType;
 import se.yrgo.cropservice.entities.enums.SoilType;
 import se.yrgo.cropservice.entities.enums.SunExposure;
+import se.yrgo.cropservice.exceptions.CropNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,20 +31,20 @@ public class CropService {
     }
 
     public boolean checkHeatRisk(Long cropId, double forecastMaxTemp) {
-        Crop crop = getCropById(cropId);
+        Crop crop = getCropById(cropId)
+                .orElseThrow(() -> new CropNotFoundException("Crop not found with id: " + cropId));
         return requirmentService.isHeatRisk(crop.getRequirements(), forecastMaxTemp);
     }
 
-    public Crop getCropById(Long id) {
-        return cropRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Crop not found with id: " + id));
+    public Optional<Crop> getCropById(Long id) {
+        return cropRepository.findById(id);
     }
 
     public List<Crop> getAllCrops() {
         return cropRepository.findAll();
     }
 
-    public Crop findCropByName(String name) {
+    public Optional<Crop> findCropByName(String name) {
         return cropRepository.findByName(name);
     }
 
@@ -80,7 +82,8 @@ public class CropService {
 
 
     public Crop updateCropBasicInfo(Long id, String name, String latinName, PlantType plantType) {
-        Crop crop = getCropById(id);
+        Crop crop = getCropById(id)
+                .orElseThrow(() -> new CropNotFoundException("Crop not found with id: " + id));
 
         if (name != null) {crop.setName(name);}
         if (latinName != null) {crop.setLatinName(latinName);}
@@ -90,7 +93,8 @@ public class CropService {
     }
 
     public Crop updateEnvironmentProfile(Long cropId, EnvironmentProfile update) {
-        Crop crop = getCropById(cropId);
+        Crop crop = getCropById(cropId)
+                .orElseThrow(() -> new CropNotFoundException("Crop not found with id: " + cropId));
 
         if (crop.getEnvironmentProfile() == null) {
             crop.setEnvironmentProfile(update);

@@ -8,6 +8,7 @@ import se.yrgo.cropservice.dao.CreateCropRequest;
 import se.yrgo.cropservice.dto.CropDTO;
 import se.yrgo.cropservice.entities.Crop;
 import se.yrgo.cropservice.entities.enums.PlantType;
+import se.yrgo.cropservice.exceptions.CropNotFoundException;
 import se.yrgo.cropservice.mapper.CropMapper;
 import se.yrgo.cropservice.service.CropService;
 
@@ -18,9 +19,7 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class CropsController {
 
-    @Autowired
     private final CropService cropService;
-    @Autowired
     private final CropMapper mapper;
 
     public CropsController(CropService cropService, CropMapper mapper) {
@@ -64,16 +63,18 @@ public class CropsController {
 
     @GetMapping("/crop/{id}")
     public ResponseEntity<CropDTO> getCropById(@PathVariable Long id) {
-        Crop crop = cropService.getCropById(id);
-        var dto = mapper.toDTO(crop);
-        return ResponseEntity.ok(dto);
+        return cropService.getCropById(id)
+                .map(mapper::toDTO)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new CropNotFoundException("Crop not found with id: " + id));
     }
 
     @GetMapping("/crop/name/{name}")
     public ResponseEntity<CropDTO> getCropByName(@PathVariable String name) {
-        var crop = cropService.findCropByName(name);
-        var dto = mapper.toDTO(crop);
-        return ResponseEntity.ok(dto);
+        return cropService.findCropByName(name)
+                .map(mapper::toDTO)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new CropNotFoundException("Crop not found with name: " + name));
     }
 
 
