@@ -12,7 +12,7 @@
 
 	<artifactId>weatherservice</artifactId>
 	<version>1.0</version>
-	<city>weatherservice</city>
+	<name>weatherservice</name>
 	<description>Weather information service</description>
 
 	<url/>
