@@ -36,3 +36,5 @@ build/
 
 # database file
 Database.mv.db
+*.mv.db
+*.trace.db
