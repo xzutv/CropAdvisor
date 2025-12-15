@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.yrgo.cropservice.data.CropRepository;
-import se.yrgo.cropservice.data.EnvoirmentProfileRepository;
 import se.yrgo.cropservice.entities.Crop;
 import se.yrgo.cropservice.entities.EnvironmentProfile;
 import se.yrgo.cropservice.entities.GrowthRequirements;
@@ -13,7 +12,6 @@ import se.yrgo.cropservice.entities.enums.SoilType;
 import se.yrgo.cropservice.entities.enums.SunExposure;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -21,10 +19,10 @@ public class CropService {
 
     private final CropRepository cropRepository;
     private final EnvironmentProfileService profileService;
-    private final GrowthRequirmentService requirmentService;
+    private final GrowthRequirementService requirmentService;
 
     @Autowired
-    public CropService(CropRepository cropRepository, EnvironmentProfileService profileService, GrowthRequirmentService requirmentService) {
+    public CropService(CropRepository cropRepository, EnvironmentProfileService profileService, GrowthRequirementService requirmentService) {
         this.cropRepository = cropRepository;
         this.profileService = profileService;
         this.requirmentService = requirmentService;
@@ -62,7 +60,7 @@ public class CropService {
         crop.setName(name);
         crop.setLatinName(latinName);
         crop.setType(plantType);
-        crop.setEnvoirmentProfile(profile);
+        crop.setEnvironmentProfile(profile);
         crop.setRequirements(requirements);
 
         return cropRepository.save(crop);
@@ -94,10 +92,10 @@ public class CropService {
     public Crop updateEnvironmentProfile(Long cropId, EnvironmentProfile update) {
         Crop crop = getCropById(cropId);
 
-        if (crop.getEnvoirmentProfile() == null) {
-            crop.setEnvoirmentProfile(update);
+        if (crop.getEnvironmentProfile() == null) {
+            crop.setEnvironmentProfile(update);
         } else {
-            profileService.updateProfile(crop.getEnvoirmentProfile(), update);
+            profileService.updateProfile(crop.getEnvironmentProfile(), update);
         }
         return cropRepository.save(crop);
     }

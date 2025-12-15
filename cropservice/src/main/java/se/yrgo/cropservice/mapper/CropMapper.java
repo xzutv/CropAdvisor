@@ -20,7 +20,7 @@ public class CropMapper {
         dto.setName(crop.getName());
         dto.setLatinName(crop.getLatinName());
         dto.setType(crop.getType());
-        dto.setEnvironmentProfile(toDTO(crop.getEnvoirmentProfile()));
+        dto.setEnvironmentProfile(toDTO(crop.getEnvironmentProfile()));
         dto.setRequirements(toDTO(crop.getRequirements()));
         return dto;
     }
