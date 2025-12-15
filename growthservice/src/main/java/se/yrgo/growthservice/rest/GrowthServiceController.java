@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import se.yrgo.growthservice.dao.CropItemData;
 import se.yrgo.growthservice.domain.crop.Crop;
-import se.yrgo.growthservice.domain.crop.GrowthRequirements;
 import se.yrgo.growthservice.domain.weather.Location;
 import se.yrgo.growthservice.domain.weather.Weather;
 import se.yrgo.growthservice.entities.CropItem;
-import se.yrgo.growthservice.service.GreenhouseStorageService;
+import se.yrgo.growthservice.service.StorageService;
 import se.yrgo.growthservice.service.MockCropService;
 import se.yrgo.growthservice.service.MockWeatherService;
 
@@ -26,9 +25,9 @@ public class GrowthServiceController {
 
     private final MockWeatherService weatherService;
     private final MockCropService cropService;
-    private final GreenhouseStorageService storageService;
+    private final StorageService storageService;
 
-    public GrowthServiceController(MockWeatherService weatherService, MockCropService cropService, GreenhouseStorageService storageService) {
+    public GrowthServiceController(MockWeatherService weatherService, MockCropService cropService, StorageService storageService) {
         this.weatherService = weatherService;
         this.cropService = cropService;
         this.storageService = storageService;

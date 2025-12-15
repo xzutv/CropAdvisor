@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import se.yrgo.growthservice.entities.CropItem;
 
 @Repository
-public interface GreenhouseStorageRepository extends JpaRepository<CropItem, Long> {
+public interface StorageRepository extends JpaRepository<CropItem, Long> {
 }

@@ -1,18 +1,18 @@
 package se.yrgo.growthservice.service;
 
 import org.springframework.stereotype.Service;
-import se.yrgo.growthservice.data.GreenhouseStorageRepository;
+import se.yrgo.growthservice.data.StorageRepository;
 import se.yrgo.growthservice.entities.CropItem;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class GreenhouseStorageService {
+public class StorageService {
 
-    private final GreenhouseStorageRepository storageRepository;
+    private final StorageRepository storageRepository;
 
-    public GreenhouseStorageService(GreenhouseStorageRepository storageRepository) {
+    public StorageService(StorageRepository storageRepository) {
         this.storageRepository = storageRepository;
     }
 

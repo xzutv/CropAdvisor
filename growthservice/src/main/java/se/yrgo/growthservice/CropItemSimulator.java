@@ -3,17 +3,16 @@ package se.yrgo.growthservice;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.yrgo.growthservice.data.GreenhouseStorageRepository;
-import se.yrgo.growthservice.domain.crop.Crop;
+import se.yrgo.growthservice.data.StorageRepository;
 import se.yrgo.growthservice.entities.CropItem;
 
 @Component
 public class CropItemSimulator {
 
-    private final GreenhouseStorageRepository storageRepository;
+    private final StorageRepository storageRepository;
 
     @Autowired
-    public CropItemSimulator(GreenhouseStorageRepository storageRepository) {
+    public CropItemSimulator(StorageRepository storageRepository) {
         this.storageRepository = storageRepository;
     }
 
