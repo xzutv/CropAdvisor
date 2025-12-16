@@ -1,6 +1,7 @@
 package se.yrgo.weatherservice.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,6 +9,8 @@ import se.yrgo.weatherservice.data.LocationRepository;
 import se.yrgo.weatherservice.data.WeatherRepository;
 import se.yrgo.weatherservice.domain.Location;
 import se.yrgo.weatherservice.domain.Weather;
+import se.yrgo.weatherservice.dto.LocationList;
+import se.yrgo.weatherservice.dto.WeatherList;
 
 import java.util.List;
 
@@ -23,24 +26,25 @@ public class WeatherRestController {
     }
 
     @GetMapping("/weather")
-    public List<Weather> getAllWeather() {
-        return weatherRepository.findAll();
+    public ResponseEntity<WeatherList> getAllWeather() {
+        return ResponseEntity.ok(new WeatherList(weatherRepository.findAll()));
     }
 
     @GetMapping("/locations")
-    public List<Location> getAllLocations() {
-        return locationRepository.findAll();
+    public ResponseEntity<LocationList> getAllLocations() {
+        return ResponseEntity.ok(new LocationList(locationRepository.findAll()));
     }
 
     @GetMapping("/weather-location")
-    public List<Weather> getLocalWeather(@RequestParam String city, @RequestParam String country) {
-        Location location = locationRepository.findByCityAndCountry(city, country).getFirst();
+    public ResponseEntity<WeatherList> getLocalWeather(@RequestParam String city, @RequestParam String country) {
+        Location location;
 
-        if (location == null) {
-            System.out.println("empty location");
-            return null;
+        if (locationRepository.findByCityAndCountry(city, country).isEmpty()) {
+            return ResponseEntity.ok(new WeatherList(List.of()));
+        } else {
+            location = locationRepository.findByCityAndCountry(city, country).getFirst();
         }
 
-        return weatherRepository.findByLocation(location);
+        return ResponseEntity.ok(new WeatherList(weatherRepository.findByLocation(location)));
     }
 }
