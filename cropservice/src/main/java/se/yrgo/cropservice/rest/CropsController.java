@@ -5,62 +5,76 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import se.yrgo.cropservice.dao.CreateCropRequest;
+import se.yrgo.cropservice.dto.CropDTO;
 import se.yrgo.cropservice.entities.Crop;
 import se.yrgo.cropservice.entities.enums.PlantType;
-import se.yrgo.cropservice.entities.enums.SoilType;
-import se.yrgo.cropservice.entities.enums.SunExposure;
+import se.yrgo.cropservice.mapper.CropMapper;
 import se.yrgo.cropservice.service.CropService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class CropsController {
 
- private final CropService cropService;
+    @Autowired
+    private final CropService cropService;
+    @Autowired
+    private final CropMapper mapper;
 
- public CropsController(CropService cropService) {
+    public CropsController(CropService cropService, CropMapper mapper) {
         this.cropService = cropService;
- }
+        this.mapper = mapper;
+    }
 
- @GetMapping()
-    public ResponseEntity<List<Crop>> getCrops() {
-     List<Crop> crops = cropService.getAllCrops();
-     return ResponseEntity.ok(crops);
- }
+    @GetMapping()
+    public ResponseEntity<List<CropDTO>> getCrops() {
+        List<Crop> crops = cropService.getAllCrops();
+        var dto = mapper.toDTOList(crops);
+        return ResponseEntity.ok(dto);
+    }
 
- @GetMapping("/search")
-    public ResponseEntity<List<Crop>> searchByType(@RequestParam PlantType type) {
-     List<Crop> crops = cropService.findByPlantType(type);
-     return ResponseEntity.ok(crops);
- }
+    @GetMapping("/search")
+    public ResponseEntity<List<CropDTO>> searchByType(@RequestParam PlantType type) {
+        List<Crop> crops = cropService.findByPlantType(type);
+        var dto = mapper.toDTOList(crops);
+        return ResponseEntity.ok(dto);
+    }
 
- @PostMapping
-    public ResponseEntity<Crop> createCrop(@RequestBody Crop newCrop) {
-     try {
-         Crop crop = cropService.createCompleteCropWithProfile(
-                 newCrop.getName(),
-                 newCrop.getLatinName(),
-                 newCrop.getType(),
-                 newCrop.getEnvoirmentProfile(),
-                 newCrop.getRequirements()
-         );
-         return ResponseEntity.status(HttpStatus.CREATED).body(crop);
-     } catch (IllegalArgumentException e) {
-         return ResponseEntity.badRequest().build();
-     }
- }
 
- @PostMapping("/create-default")
-    public ResponseEntity<Crop> createDefaultCrop(@RequestBody CreateCropRequest request) {
+    @PostMapping("/create-default")
+    public ResponseEntity<CropDTO> createCropWithDefaultProfile(@RequestBody CreateCropRequest request) {
 
-     Crop crop = cropService.createProfileWithDefaults(
-             request.getName(),
-             request.getLatinName(),
-             request.getType(),
-             request.getSoilType(),
-             request.getSunExposure());
-     return ResponseEntity.ok(crop);
- }
+        try {
+            Crop crop = cropService.createProfileWithDefaults(
+                    request.getName(),
+                    request.getLatinName(),
+                    request.getType(),
+                    request.getSoilType(),
+                    request.getSunExposure());
+
+            CropDTO dto = mapper.toDTO(crop);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/crop/{id}")
+    public ResponseEntity<CropDTO> getCropById(@PathVariable Long id) {
+        Crop crop = cropService.getCropById(id);
+        var dto = mapper.toDTO(crop);
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/crop/name/{name}")
+    public ResponseEntity<CropDTO> getCropByName(@PathVariable String name) {
+        var crop = cropService.findCropByName(name);
+        var dto = mapper.toDTO(crop);
+        return ResponseEntity.ok(dto);
+    }
+
 
 }

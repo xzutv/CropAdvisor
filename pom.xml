@@ -13,7 +13,7 @@
     <artifactId>plantly</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
-    <city>plantly</city>
+    <name>plantly</name>
     <description>Crop information service</description>
 
     <properties>
@@ -24,6 +24,7 @@
         <module>cropservice</module>
         <module>weatherservice</module>
         <module>growthservice</module>
+        <module>frontend</module>
     </modules>
 
 </project>

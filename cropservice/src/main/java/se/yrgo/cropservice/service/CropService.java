@@ -44,7 +44,7 @@ public class CropService {
         return cropRepository.findAll();
     }
 
-    public Optional<Crop> findCropByName(String name) {
+    public Crop findCropByName(String name) {
         return cropRepository.findByName(name);
     }
 
