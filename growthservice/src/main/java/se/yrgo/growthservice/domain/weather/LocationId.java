@@ -1,11 +1,10 @@
-package se.yrgo.weatherservice.domain;
+package se.yrgo.growthservice.domain.weather;
 
 import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-@Embeddable
 public class LocationId implements Serializable {
     private String city;
     private String country;
