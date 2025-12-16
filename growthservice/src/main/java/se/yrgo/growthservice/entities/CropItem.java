@@ -1,9 +1,7 @@
 package se.yrgo.growthservice.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import se.yrgo.growthservice.domain.weather.LocationId;
 
 @Entity
 public class CropItem {
@@ -12,13 +10,17 @@ public class CropItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long locationId;
+    private String city;
+    private String country;
+
     private Long cropId;
 
-    public CropItem() {}
+    public CropItem() {
+    }
 
-    public CropItem(Long locationId, Long cropId) {
-        this.locationId = locationId;
+    public CropItem(String city, String country, Long cropId) {
+        this.city = city;
+        this.country = country;
         this.cropId = cropId;
     }
 
@@ -26,23 +28,15 @@ public class CropItem {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getCity() {
+        return city;
     }
 
-    public Long getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(Long locationId) {
-        this.locationId = locationId;
+    public String getCountry() {
+        return country;
     }
 
     public Long getCropId() {
         return cropId;
-    }
-
-    public void setCropId(Long cropId) {
-        this.cropId = cropId;
     }
 }

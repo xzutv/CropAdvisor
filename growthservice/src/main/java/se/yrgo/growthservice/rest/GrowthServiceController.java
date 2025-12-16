@@ -9,13 +9,13 @@ import se.yrgo.growthservice.dao.LocalWeatherData;
 import se.yrgo.growthservice.domain.advice.Advice;
 import se.yrgo.growthservice.domain.crop.Crop;
 import se.yrgo.growthservice.domain.weather.Location;
+import se.yrgo.growthservice.domain.weather.LocationId;
 import se.yrgo.growthservice.domain.weather.Weather;
 import se.yrgo.growthservice.entities.CropItem;
 import se.yrgo.growthservice.service.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -87,24 +87,43 @@ public class GrowthServiceController {
 
 
     private List<CropItemData> mapCropItemToData(List<CropItem> cropItems) {
-        Map<Integer, Location> locationById = weatherService.getAllLocations()
+
+        Map<LocationId, Location> locationByLocationId = weatherService.getAllLocations()
                 .stream()
-                .collect(Collectors.toMap(Location::getId, Function.identity()));
+                .collect(Collectors.toMap(
+                        Location::getLocationId,
+                        Function.identity()
+                ));
 
         Map<Long, Crop> cropById = cropService.getCrops()
                 .stream()
-                .collect(Collectors.toMap(Crop::getId, Function.identity()));
-
+                .collect(Collectors.toMap(
+                        Crop::getId,
+                        Function.identity()
+                ));
 
         return cropItems.stream()
-                .map(cropItem -> {
-                    Location location = locationById.get(cropItem.getLocationId());
-                    Crop crop = cropById.get(cropItem.getCropId());
+                .map(item -> {
+                    LocationId locationId = new LocationId();
+                    locationId.setCity(item.getCity());
+                    locationId.setCountry(item.getCountry());
 
-                    return new CropItemData(
-                            crop,
-                            location
-                    );
+                    Location location = locationByLocationId.get(locationId);
+                    Crop crop = cropById.get(item.getCropId());
+
+                    if (location == null) {
+                        throw new IllegalArgumentException(
+                                "No location for " + item.getCity() + ", " + item.getCountry()
+                        );
+                    }
+
+                    if (crop == null) {
+                        throw new IllegalArgumentException(
+                                "No crop with id " + item.getCropId()
+                        );
+                    }
+
+                    return new CropItemData(crop, location);
                 })
                 .toList();
     }

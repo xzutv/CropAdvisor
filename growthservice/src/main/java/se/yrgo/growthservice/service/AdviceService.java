@@ -7,6 +7,7 @@ import se.yrgo.growthservice.domain.advice.Advice;
 import se.yrgo.growthservice.domain.crop.Crop;
 import se.yrgo.growthservice.domain.crop.enums.SunExposure;
 import se.yrgo.growthservice.domain.weather.Location;
+import se.yrgo.growthservice.domain.weather.LocationId;
 import se.yrgo.growthservice.domain.weather.Weather;
 import se.yrgo.growthservice.entities.CropItem;
 
@@ -37,13 +38,17 @@ public class AdviceService {
         return allAdvices;
     }
 
-    public List<Advice> getAdvicesForItem(CropItem item) {
-        Crop crop = cropService.getCropById(item.getCropId());
-        Location location = weatherService.getLocationById(item.getLocationId());
 
-        List<Weather> weatherList = weatherService.getLocalWeather(
-                new LocalWeatherData(location.getCity(), location.getCountry())
-        );
+    public List<Advice> getAdvicesForItem(CropItem item) {
+
+        Crop crop = cropService.getCropById(item.getCropId());
+
+        LocalWeatherData weatherData =
+                new LocalWeatherData(item.getCity(), item.getCountry());
+
+        List<Weather> weatherList =
+                weatherService.getLocalWeather(weatherData);
+
         Weather weather = weatherList.isEmpty() ? null : weatherList.get(0);
 
         return evaluate(crop, weather);

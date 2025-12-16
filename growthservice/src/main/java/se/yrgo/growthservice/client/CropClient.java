@@ -35,7 +35,7 @@ public class CropClient {
     }
 
     public Crop getCropById(Long cropId) {
-        return client.get().uri("/" + cropId).retrieve().body(Crop.class);
+        return client.get().uri("/crop/" + cropId).retrieve().body(Crop.class);
     }
 
     public Crop findCropByName(String cropName) {

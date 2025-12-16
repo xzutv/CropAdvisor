@@ -1,6 +1,5 @@
 package se.yrgo.growthservice.service;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import se.yrgo.growthservice.dao.LocalWeatherData;
 import se.yrgo.growthservice.domain.weather.Location;
@@ -13,7 +12,7 @@ import java.util.List;
 @Service
 public class MockWeatherService {
 
-    private Location gbgLocation = new Location(1, "Gothenburg", "Sweden", null);
+    private Location gbgLocation = new Location();
 
 
     private List<Weather> weathers = List.of(
@@ -53,10 +52,4 @@ public class MockWeatherService {
                 .toList();
     }
 
-    public Location getLocationById(Long id) {
-        return getAllLocations().stream()
-                .filter(location -> location.getId() != null && id.equals(location.getId().longValue()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No location with id " + id));
-    }
 }

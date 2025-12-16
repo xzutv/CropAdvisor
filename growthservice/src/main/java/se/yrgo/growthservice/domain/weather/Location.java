@@ -1,36 +1,41 @@
 package se.yrgo.growthservice.domain.weather;
 
+
 public class Location {
-    private Integer id;
 
-    private String city;
-    private String country;
+    private Long id;
 
-    private Weather weather;
+    private LocationId locationId;
 
-    public Location(){}
-
-    public Location(Integer id, String city, String country, Weather weather) {
-        this.id = id;
-        this.city = city;
-        this.country = country;
-        this.weather = weather;
-    }
-
-    public Integer getId() {
-        return id;
+    public Location() {
+        this.locationId = new LocationId();
     }
 
     public String getCity() {
-        return city;
+        return locationId.getCity();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setCity(String city) {
+        locationId.setCity(city);
     }
 
     public String getCountry() {
-        return country;
+        return locationId.getCountry();
     }
 
-    public Weather getWeather() {
-        return weather;
+    public void setCountry(String country) {
+        locationId.setCountry(country);
+    }
+
+    public LocationId getLocationId() {
+        return locationId;
     }
 }
-
