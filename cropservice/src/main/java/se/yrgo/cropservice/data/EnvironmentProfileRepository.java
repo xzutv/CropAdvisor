@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import se.yrgo.cropservice.entities.EnvironmentProfile;
 
 @Repository
-public interface EnvoirmentProfileRepository extends JpaRepository<EnvironmentProfile, Long> {
+public interface EnvironmentProfileRepository extends JpaRepository<EnvironmentProfile, Long> {
 }
