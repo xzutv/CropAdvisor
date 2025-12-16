@@ -30,6 +30,23 @@ public class WeatherClient {
         return List.of(locations);
     }
 
+    public Location getLocationByCityAndCountry(String city, String country) {
+        Location[] locations = client.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/locations/search")
+                        .queryParam("city", city)
+                        .queryParam("country", country)
+                        .build())
+                .retrieve()
+                .body(Location[].class);
+
+        if (locations.length > 0) {
+            return locations[0];
+        } else {
+            throw new RuntimeException("Location not found for city: " + city + ", country: " + country);
+        }
+    }
+
     public List<Weather> getAllWeather() {
         Weather[] weathers = client.get()
                 .uri("/weather")
