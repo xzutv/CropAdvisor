@@ -11,10 +11,6 @@ import java.util.List;
 
 @Repository
 public interface WeatherRepository extends JpaRepository<Weather, Long> {
-
-    @Query("select w from Weather w")
-    public List<Weather> findAll();
-
     @Query("select w from Weather w where w.location = :location")
     public List<Weather> findByLocation(@Param("location") Location location);
 }

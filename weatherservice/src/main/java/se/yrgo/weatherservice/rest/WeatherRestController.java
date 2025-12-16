@@ -34,9 +34,13 @@ public class WeatherRestController {
 
     @GetMapping("/weather-location")
     public List<Weather> getLocalWeather(@RequestParam String city, @RequestParam String country) {
-        Location location = new Location();
-        location.setCity(city);
-        location.setCountry(country);
+        Location location = locationRepository.findByCityAndCountry(city, country).getFirst();
+
+        if (location == null) {
+            System.out.println("empty location");
+            return null;
+        }
+
         return weatherRepository.findByLocation(location);
     }
 }
