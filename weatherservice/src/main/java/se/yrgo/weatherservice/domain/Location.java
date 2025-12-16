@@ -4,43 +4,27 @@ import jakarta.persistence.*;
 
 @Entity
 public class Location {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @EmbeddedId
+    private LocationId id;
 
-    private String city;
-    private String country;
-
-    public Location(String city, String country) {
-        this.city = city;
-        this.country = country;
-    }
-
-    public Location() {}
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public Location() {
+        this.id = new LocationId();
     }
 
     public String getCity() {
-        return city;
+        return id.getCity();
     }
 
     public void setCity(String city) {
-        this.city = city;
+        id.setCity(city);
     }
 
     public String getCountry() {
-        return country;
+        return id.getCountry();
     }
 
     public void setCountry(String country) {
-        this.country = country;
+        id.setCountry(country);
     }
-
 
 }

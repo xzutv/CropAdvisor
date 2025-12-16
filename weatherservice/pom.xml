@@ -12,7 +12,6 @@
 
 	<artifactId>weatherservice</artifactId>
 	<version>1.0</version>
-	<city>weatherservice</city>
 	<description>Weather information service</description>
 
 	<url/>
@@ -28,9 +27,11 @@
 		<tag/>
 		<url/>
 	</scm>
+
 	<properties>
 		<java.version>21</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

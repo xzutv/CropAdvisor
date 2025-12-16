@@ -15,11 +15,10 @@ public class Weather {
     private BigDecimal temp;
     private int humidity;
     private BigDecimal wind;
-    private Boolean rain;
+    private BigDecimal rain;
     private LocalDate timestamp;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id")
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private Location location;
 
     public BigDecimal getTemp() {
@@ -46,12 +45,12 @@ public class Weather {
         this.wind = new BigDecimal(wind).setScale(1, RoundingMode.HALF_UP);
     }
 
-    public Boolean getRain() {
+    public BigDecimal getRain() {
         return rain;
     }
 
-    public void setRain(Boolean rain) {
-        this.rain = rain;
+    public void setRain(Double rain) {
+        this.rain = new BigDecimal(rain).setScale(1, RoundingMode.HALF_UP);
     }
 
     public LocalDate getTimestamp() {
