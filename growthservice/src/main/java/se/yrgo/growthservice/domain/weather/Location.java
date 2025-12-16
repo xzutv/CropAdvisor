@@ -8,6 +8,8 @@ public class Location {
 
     private Weather weather;
 
+    public Location(){}
+
     public Location(int id, String city, String country, Weather weather) {
         this.id = id;
         this.city = city;

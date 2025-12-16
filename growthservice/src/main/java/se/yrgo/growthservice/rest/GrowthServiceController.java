@@ -6,13 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import se.yrgo.growthservice.dao.CropItemData;
+import se.yrgo.growthservice.dao.LocalWeatherData;
 import se.yrgo.growthservice.domain.crop.Crop;
 import se.yrgo.growthservice.domain.weather.Location;
 import se.yrgo.growthservice.domain.weather.Weather;
 import se.yrgo.growthservice.entities.CropItem;
-import se.yrgo.growthservice.service.StorageService;
-import se.yrgo.growthservice.service.MockCropService;
-import se.yrgo.growthservice.service.MockWeatherService;
+import se.yrgo.growthservice.service.*;
 
 import java.util.List;
 import java.util.Map;
@@ -23,19 +22,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/advice")
 public class GrowthServiceController {
 
-    private final MockWeatherService weatherService;
-    private final MockCropService cropService;
+    private final WeatherService weatherService;
+    private final CropService cropService;
     private final StorageService storageService;
 
-    public GrowthServiceController(MockWeatherService weatherService, MockCropService cropService, StorageService storageService) {
+    public GrowthServiceController(WeatherService weatherService, CropService cropService, StorageService storageService) {
         this.weatherService = weatherService;
         this.cropService = cropService;
         this.storageService = storageService;
-    }
-
-    @GetMapping("/")
-    public GrowthResponse bajs() {
-        return new GrowthResponse("");
     }
 
     // ?test=test   /advice/test
@@ -46,12 +40,22 @@ public class GrowthServiceController {
         return new GrowthResponse(test);
     }
 
-
     @GetMapping("/test3")
     public GrowthResponse getGrowthAdvice2(@RequestParam @Nullable String country, @RequestParam @Nullable String city) {
         List<Location> test = weatherService.getAllLocations();
 
         return new GrowthResponse(test);
+    }
+
+    @GetMapping("/local")
+    public GrowthResponse getLocalWeather(@RequestParam @Nullable String city, @RequestParam @Nullable String country) {
+        if (city == null || country == null) {
+            throw new IllegalArgumentException("city and country are required");
+        }
+        LocalWeatherData localWeatherData = new LocalWeatherData(city, country);
+        List<Weather> local = weatherService.getLocalWeather(localWeatherData);
+
+        return new GrowthResponse(local);
     }
 
     @GetMapping("/test2")

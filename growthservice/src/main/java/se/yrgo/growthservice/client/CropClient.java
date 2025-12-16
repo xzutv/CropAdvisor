@@ -1,5 +1,6 @@
 package se.yrgo.growthservice.client;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -14,15 +15,15 @@ public class CropClient {
     private final RestClient client;
 
     public CropClient(RestClient.Builder builder) {
-        this.client = builder.baseUrl("http://localhost:8081/").defaultHeader("content-type", MediaType.APPLICATION_JSON_VALUE).build();
+        this.client = builder.baseUrl("http://localhost:8081/api").defaultHeader("content-type", MediaType.APPLICATION_JSON_VALUE).build();
     }
 
     public List<Crop> getCrops() {
-        return client.get().uri("/").retrieve().body(List.class);
+        return client.get().uri("").retrieve().body(new ParameterizedTypeReference<List<Crop>>() {});
     }
 
     public List<Crop> searchByType(PlantType plantType) {
-        return client.get().uri("/serach").retrieve().body(List.class);
+        return client.get().uri("/search").retrieve().body(List.class);
     }
 
     public Crop createCrop(Crop newCrop) {

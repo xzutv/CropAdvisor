@@ -40,7 +40,8 @@ public class MockWeatherService {
             new Weather(30.1, 2, "vindyo", true, LocalDate.now(), gbgLocation)
     );
 
-    public MockWeatherService() {}
+    public MockWeatherService() {
+    }
 
     public List<Weather> getAllWeather() {
         return weathers;
@@ -61,5 +62,12 @@ public class MockWeatherService {
                         .getCountry()
                         .equalsIgnoreCase(localWeatherData.country()))
                 .toList();
+    }
+
+    public Location getLocationById(Long id) {
+        return getAllLocations().stream()
+                .filter(location -> location.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No location withd id" + id));
     }
 }

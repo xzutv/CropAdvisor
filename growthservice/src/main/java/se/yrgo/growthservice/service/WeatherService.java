@@ -28,4 +28,12 @@ public class WeatherService {
     public List<Weather> getLocalWeather(LocalWeatherData localWeatherData) {
         return weatherClient.getLocalWeather(localWeatherData);
     }
+
+    public Location getLocationById(Long id) {
+        return getAllLocations().stream()
+                .filter(location -> location.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No location with id" + id));
+    }
+
 }
