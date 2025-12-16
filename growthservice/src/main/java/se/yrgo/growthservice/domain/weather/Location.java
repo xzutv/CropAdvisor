@@ -1,41 +1,25 @@
 package se.yrgo.growthservice.domain.weather;
 
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import se.yrgo.growthservice.domain.weather.LocationId;
 
+@Entity
 public class Location {
 
-    private Long id;
-
-    private LocationId locationId;
+    @EmbeddedId
+    private LocationId id;
 
     public Location() {
-        this.locationId = new LocationId();
+        this.id = new LocationId();
     }
 
-    public String getCity() {
-        return locationId.getCity();
+    public Location(String city, String country) {
+        this.id = new LocationId();
+        this.id.setCity(city);
+        this.id.setCountry(country);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setCity(String city) {
-        locationId.setCity(city);
-    }
-
-    public String getCountry() {
-        return locationId.getCountry();
-    }
-
-    public void setCountry(String country) {
-        locationId.setCountry(country);
-    }
-
-    public LocationId getLocationId() {
-        return locationId;
-    }
+    public String getCity() { return id.getCity(); }
+    public String getCountry() { return id.getCountry(); }
 }

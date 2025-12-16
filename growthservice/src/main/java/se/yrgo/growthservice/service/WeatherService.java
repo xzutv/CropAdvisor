@@ -29,10 +29,14 @@ public class WeatherService {
         return weatherClient.getLocalWeather(localWeatherData);
     }
 
-    public Location getLocationById(Long id) {
-        return getAllLocations().stream()
-                .filter(location -> location.getId() != null && location.getId().equals(id))
+    public Location getLocationByCityAndCountry(String city, String country) {
+        List<Location> locations = weatherClient.getAllLocations();
+        return locations.stream()
+                .filter(loc -> city.equalsIgnoreCase(loc.getCity()) &&
+                        country.equalsIgnoreCase(loc.getCountry()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No location with id " + id));
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "No location found for city: " + city + ", country: " + country));
     }
 }

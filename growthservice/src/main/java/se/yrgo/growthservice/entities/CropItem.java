@@ -1,42 +1,44 @@
 package se.yrgo.growthservice.entities;
 
 import jakarta.persistence.*;
-import se.yrgo.growthservice.domain.weather.LocationId;
 
 @Entity
+@Table(
+        uniqueConstraints = @UniqueConstraint(columnNames = {"crop_id", "city", "country"})
+)
 public class CropItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Long cropId;
 
     private String city;
     private String country;
 
-    private Long cropId;
+    public CropItem() {}
 
-    public CropItem() {
-    }
-
-    public CropItem(String city, String country, Long cropId) {
+    public CropItem(Long cropId, String city, String country) {
+        this.cropId = cropId;
         this.city = city;
         this.country = country;
+    }
+
+    public Long getId() { return id; }
+    public Long getCropId() { return cropId; }
+    public String getCity() { return city; }
+    public String getCountry() { return country; }
+
+    public void setCropId(Long cropId) {
         this.cropId = cropId;
     }
 
-    public Long getId() {
-        return id;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public Long getCropId() {
-        return cropId;
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

@@ -2,12 +2,11 @@ package se.yrgo.growthservice.service;
 
 import org.springframework.stereotype.Service;
 import se.yrgo.growthservice.dao.LocalWeatherData;
-import se.yrgo.growthservice.data.StorageRepository;
+import se.yrgo.growthservice.data.CropItemRepository;
 import se.yrgo.growthservice.domain.advice.Advice;
 import se.yrgo.growthservice.domain.crop.Crop;
 import se.yrgo.growthservice.domain.crop.enums.SunExposure;
 import se.yrgo.growthservice.domain.weather.Location;
-import se.yrgo.growthservice.domain.weather.LocationId;
 import se.yrgo.growthservice.domain.weather.Weather;
 import se.yrgo.growthservice.entities.CropItem;
 
@@ -21,16 +20,16 @@ public class AdviceService {
 
     private final WeatherService weatherService;
     private final CropService cropService;
-    private final StorageRepository storageRepository;
+    private final CropItemRepository cropItemRepository;
 
-    public AdviceService(WeatherService weatherService, CropService cropService, StorageRepository storageRepository) {
+    public AdviceService(WeatherService weatherService, CropService cropService, CropItemRepository cropItemRepository) {
         this.weatherService = weatherService;
         this.cropService = cropService;
-        this.storageRepository = storageRepository;
+        this.cropItemRepository = cropItemRepository;
     }
 
     public List<List<Advice>> getAllAdvices() {
-        List<CropItem> items = storageRepository.findAll();
+        List<CropItem> items = cropItemRepository.findAll();
         List<List<Advice>> allAdvices = new ArrayList<>();
         for (CropItem item : items) {
             allAdvices.add(getAdvicesForItem(item));
@@ -40,15 +39,18 @@ public class AdviceService {
 
 
     public List<Advice> getAdvicesForItem(CropItem item) {
-
         Crop crop = cropService.getCropById(item.getCropId());
 
-        LocalWeatherData weatherData =
-                new LocalWeatherData(item.getCity(), item.getCountry());
+        Location location = weatherService.getLocationByCityAndCountry(item.getCity(), item.getCountry());
+        if (location == null) {
+            throw new IllegalArgumentException(
+                    "CropItem " + item.getId() + " har ingen location i WeatherService för " +
+                            item.getCity() + ", " + item.getCountry()
+            );
+        }
 
-        List<Weather> weatherList =
-                weatherService.getLocalWeather(weatherData);
-
+        LocalWeatherData weatherData = new LocalWeatherData(location.getCity(), location.getCountry());
+        List<Weather> weatherList = weatherService.getLocalWeather(weatherData);
         Weather weather = weatherList.isEmpty() ? null : weatherList.get(0);
 
         return evaluate(crop, weather);
