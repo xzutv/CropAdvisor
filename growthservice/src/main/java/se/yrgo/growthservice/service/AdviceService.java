@@ -5,13 +5,12 @@ import se.yrgo.growthservice.dao.LocalWeatherData;
 import se.yrgo.growthservice.data.StorageRepository;
 import se.yrgo.growthservice.domain.advice.Advice;
 import se.yrgo.growthservice.domain.crop.Crop;
-import se.yrgo.growthservice.domain.crop.enums.PlantType;
+import se.yrgo.growthservice.domain.crop.enums.SunExposure;
 import se.yrgo.growthservice.domain.weather.Location;
 import se.yrgo.growthservice.domain.weather.Weather;
 import se.yrgo.growthservice.entities.CropItem;
-import se.yrgo.growthservice.service.CropService;
-import se.yrgo.growthservice.service.WeatherService;
 
+import java.math.BigDecimal;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,6 @@ public class AdviceService {
         this.storageRepository = storageRepository;
     }
 
-    // Returns all advices for all crop items in storage
     public List<List<Advice>> getAllAdvices() {
         List<CropItem> items = storageRepository.findAll();
         List<List<Advice>> allAdvices = new ArrayList<>();
@@ -39,8 +37,7 @@ public class AdviceService {
         return allAdvices;
     }
 
-    // Returns a list of advices for a single crop item
-    private List<Advice> getAdvicesForItem(CropItem item) {
+    public List<Advice> getAdvicesForItem(CropItem item) {
         Crop crop = cropService.getCropById(item.getCropId());
         Location location = weatherService.getLocationById(item.getLocationId());
 
@@ -49,45 +46,73 @@ public class AdviceService {
         );
         Weather weather = weatherList.isEmpty() ? null : weatherList.get(0);
 
-        return evaluate(crop, weather, location);
+        return evaluate(crop, weather);
     }
 
-    // Evaluates multiple advice types for a crop under current weather
-    private List<Advice> evaluate(Crop crop, Weather weather, Location location) {
+    private List<Advice> evaluate(Crop crop, Weather weather) {
         List<Advice> advices = new ArrayList<>();
-
         if (weather == null) {
             advices.add(new Advice("Weather data unavailable", false));
             return advices;
         }
 
+        BigDecimal temp = weather.getTemp();
+        BigDecimal rain = weather.getRain();
+        BigDecimal clouds = weather.getClouds();
+        BigDecimal wind = weather.getWind();
+        int humidity = weather.getHumidity();
+
         // Water advice
-        if (weather.getRain() < crop.getRequirements().getWaterLitersPerWeek()) {
+        if (rain.compareTo(BigDecimal.valueOf(crop.getRequirements().getWaterLitersPerWeek())) < 0) {
             advices.add(new Advice("Water your " + crop.getName(), true));
         } else {
             advices.add(new Advice(crop.getName() + " has enough water", false));
         }
 
         // Temperature advice
-        if (crop.getRequirements().isFrostSensitive() && weather.getTemp() < crop.getRequirements().getOptimalTempMin()) {
-            advices.add(new Advice("Protect " + crop.getName() + " from frost", true));
+        double minTemp = crop.getRequirements().getOptimalTempMin();
+        double maxTemp = crop.getRequirements().getOptimalTempMax();
+        double warningThreshold = 2.0;
+
+        if (crop.getRequirements().isFrostSensitive()) {
+            if (temp.doubleValue() < minTemp) {
+                advices.add(new Advice("Protect " + crop.getName() + " from frost", true));
+            } else if (temp.doubleValue() < minTemp + warningThreshold) {
+                advices.add(new Advice(crop.getName() + " is approaching cold stress", true));
+            }
         }
-        if (crop.getRequirements().isHeatSensitive() && weather.getTemp() > crop.getRequirements().getOptimalTempMax()) {
-            advices.add(new Advice("Provide shade for " + crop.getName(), true));
+
+        if (crop.getRequirements().isHeatSensitive()) {
+            if (temp.doubleValue() > maxTemp) {
+                advices.add(new Advice("Provide shade for " + crop.getName(), true));
+            } else if (temp.doubleValue() > maxTemp - warningThreshold) {
+                advices.add(new Advice(crop.getName() + " is approaching heat stress", true));
+            }
         }
 
         // Sun exposure advice
-        switch (crop.getEnviromentProfile().getSunExposure()) {
+        SunExposure sun = crop.getEnviromentProfile().getSunExposure();
+        switch (sun) {
             case FULL_SUN -> {
-                if (weather.getCloudiness() > 80) {
+                if (clouds.compareTo(BigDecimal.valueOf(80)) > 0) {
                     advices.add(new Advice(crop.getName() + " may need more sunlight", true));
                 }
             }
             case PARTIAL_SHADE, PART_SUN -> {
-                if (weather.getTemp() > crop.getRequirements().getOptimalTempMax()) {
+                if (temp.compareTo(BigDecimal.valueOf(maxTemp)) > 0) {
                     advices.add(new Advice(crop.getName() + " may overheat, provide shade", true));
                 }
             }
+        }
+
+        // Wind advice
+        if (wind.compareTo(BigDecimal.valueOf(20)) > 0) {
+            advices.add(new Advice(crop.getName() + " may be affected by strong wind", true));
+        }
+
+        // Humidity advice
+        if (humidity < 30) {
+            advices.add(new Advice(crop.getName() + " may need extra water due to low humidity", true));
         }
 
         // Seasonal advice
@@ -105,8 +130,18 @@ public class AdviceService {
     private boolean isMonthInRange(Month current, String season) {
         if (season == null || season.isEmpty()) return false;
         String[] parts = season.split("-");
-        Month start = Month.valueOf(parts[0].toUpperCase());
-        Month end = Month.valueOf(parts[1].toUpperCase());
-        return !current.isBefore(start) && !current.isAfter(end);
+        if (parts.length != 2) return false;
+
+        try {
+            int startMonth = Month.valueOf(parts[0].trim().toUpperCase()).getValue();
+            int endMonth = Month.valueOf(parts[1].trim().toUpperCase()).getValue();
+            int currentMonth = current.getValue();
+
+            return startMonth <= endMonth
+                    ? currentMonth >= startMonth && currentMonth <= endMonth
+                    : currentMonth >= startMonth || currentMonth <= endMonth;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

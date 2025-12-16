@@ -1,7 +1,7 @@
 package se.yrgo.growthservice.domain.weather;
 
 public class Location {
-    private int id;
+    private Integer id;
 
     private String city;
     private String country;
@@ -10,14 +10,14 @@ public class Location {
 
     public Location(){}
 
-    public Location(int id, String city, String country, Weather weather) {
+    public Location(Integer id, String city, String country, Weather weather) {
         this.id = id;
         this.city = city;
         this.country = country;
         this.weather = weather;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

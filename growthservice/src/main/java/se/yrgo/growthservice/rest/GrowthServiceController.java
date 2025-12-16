@@ -1,12 +1,12 @@
 package se.yrgo.growthservice.rest;
 
 import jakarta.annotation.Nullable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import se.yrgo.growthservice.dao.CropItemData;
 import se.yrgo.growthservice.dao.LocalWeatherData;
+import se.yrgo.growthservice.domain.advice.Advice;
 import se.yrgo.growthservice.domain.crop.Crop;
 import se.yrgo.growthservice.domain.weather.Location;
 import se.yrgo.growthservice.domain.weather.Weather;
@@ -15,21 +15,24 @@ import se.yrgo.growthservice.service.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/advice")
+@RequestMapping("/api/advice")
 public class GrowthServiceController {
 
     private final WeatherService weatherService;
     private final CropService cropService;
     private final StorageService storageService;
+    private final AdviceService adviceService;
 
-    public GrowthServiceController(WeatherService weatherService, CropService cropService, StorageService storageService) {
+    public GrowthServiceController(WeatherService weatherService, CropService cropService, StorageService storageService, AdviceService adviceService) {
         this.weatherService = weatherService;
         this.cropService = cropService;
         this.storageService = storageService;
+        this.adviceService = adviceService;
     }
 
     // ?test=test   /advice/test
@@ -69,6 +72,19 @@ public class GrowthServiceController {
         List<CropItem> crops = storageService.findAll();
         return new GrowthResponse(mapCropItemToData(crops));
     }
+
+    @GetMapping
+    public List<List<Advice>> getAllAdvices() {
+        return adviceService.getAllAdvices();
+    }
+
+    @GetMapping("/{itemId}")
+    public List<Advice> getAdviceForItem(@PathVariable Long itemId) {
+        CropItem item = storageService.findById(itemId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CropItem not found"));
+        return adviceService.getAdvicesForItem(item);
+    }
+
 
     private List<CropItemData> mapCropItemToData(List<CropItem> cropItems) {
         Map<Integer, Location> locationById = weatherService.getAllLocations()

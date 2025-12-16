@@ -29,11 +29,11 @@ public class WeatherService {
         return weatherClient.getLocalWeather(localWeatherData);
     }
 
+
     public Location getLocationById(Long id) {
         return getAllLocations().stream()
-                .filter(location -> location.getId() == id)
+                .filter(location -> location.getId() != null && id.equals(location.getId().longValue()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No location with id" + id));
+                .orElseThrow(() -> new IllegalArgumentException("No location with id " + id));
     }
-
 }

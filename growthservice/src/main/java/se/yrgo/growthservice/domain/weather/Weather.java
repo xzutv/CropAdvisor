@@ -1,39 +1,50 @@
 package se.yrgo.growthservice.domain.weather;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Weather {
-    private Double temp;
-    private int humidity;
-    private String wind;
-    private Boolean rain;
+
+    private BigDecimal temp;
+    private Integer humidity;
+    private BigDecimal wind;
+    private BigDecimal rain;
+    private BigDecimal clouds;
     private LocalDate timestamp;
 
     private Location location;
 
-    public Weather(Double temp, int humidity, String wind, Boolean rain, LocalDate timestamp, Location location) {
+    public Weather() {
+    }
+
+    public Weather(BigDecimal temp, Integer humidity, BigDecimal wind, BigDecimal rain, BigDecimal clouds, LocalDate timestamp, Location location) {
         this.temp = temp;
         this.humidity = humidity;
         this.wind = wind;
         this.rain = rain;
+        this.clouds = clouds;
         this.timestamp = timestamp;
         this.location = location;
     }
 
-    public Double getTemp() {
+    public BigDecimal getTemp() {
         return temp;
     }
 
-    public int getHumidity() {
+    public Integer getHumidity() {
         return humidity;
     }
 
-    public String getWind() {
+    public BigDecimal getWind() {
         return wind;
     }
 
-    public Boolean getRain() {
+    public BigDecimal getRain() {
         return rain;
+    }
+
+    public BigDecimal getClouds() {
+        return clouds;
     }
 
     public LocalDate getTimestamp() {
