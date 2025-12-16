@@ -46,6 +46,7 @@ public class WeatherSimulator {
             weather.setRain(random.nextDouble(0, 5));
             weather.setHumidity(random.nextInt(20, 90));
             weather.setWind(random.nextDouble(5, 25));
+            weather.setClouds(random.nextDouble(0, 100));
             weather.setLocation(location);
             System.out.println(weather);
             weatherRepository.save(weather);

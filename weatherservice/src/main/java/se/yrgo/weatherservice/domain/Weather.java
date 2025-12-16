@@ -16,6 +16,7 @@ public class Weather {
     private int humidity;
     private BigDecimal wind;
     private BigDecimal rain;
+    private BigDecimal clouds;
     private LocalDate timestamp;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
@@ -53,6 +54,14 @@ public class Weather {
         this.rain = new BigDecimal(rain).setScale(1, RoundingMode.HALF_UP);
     }
 
+    public BigDecimal getClouds() {
+        return clouds;
+    }
+
+    public void setClouds(Double clouds) {
+        this.clouds = new BigDecimal(clouds).setScale(1, RoundingMode.HALF_UP);
+    }
+
     public LocalDate getTimestamp() {
         return timestamp;
     }
@@ -72,10 +81,12 @@ public class Weather {
     @Override
     public String toString() {
         return "Weather{" +
-                "temp=" + temp +
+                "id=" + id +
+                ", temp=" + temp +
                 ", humidity=" + humidity +
-                ", wind='" + wind + '\'' +
+                ", wind=" + wind +
                 ", rain=" + rain +
+                ", clouds=" + clouds +
                 ", timestamp=" + timestamp +
                 ", location=" + location +
                 '}';
