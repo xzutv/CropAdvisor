@@ -21,7 +21,7 @@ public class Crop {
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
     orphanRemoval = true)
-    @JoinColumn(name = "envoirment_profile_id")
+    @JoinColumn(name = "environment_profile_id")
     private EnvironmentProfile environmentProfile;
 
     public Crop() {}
@@ -67,11 +67,11 @@ public class Crop {
         this.requirements = requirements;
     }
 
-    public EnvironmentProfile getEnvoirmentProfile() {
+    public EnvironmentProfile getEnvironmentProfile() {
         return environmentProfile;
     }
 
-    public void setEnvoirmentProfile(EnvironmentProfile environmentProfile) {
+    public void setEnvironmentProfile(EnvironmentProfile environmentProfile) {
         this.environmentProfile = environmentProfile;
     }
 }

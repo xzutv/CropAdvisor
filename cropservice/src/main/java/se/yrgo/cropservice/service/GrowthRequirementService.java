@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import se.yrgo.cropservice.entities.GrowthRequirements;
 
 @Service
-public class GrowthRequirmentService {
+public class GrowthRequirementService {
 
     public GrowthRequirements createDefaultRequirements(boolean isTropical) {
 

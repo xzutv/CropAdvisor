@@ -13,8 +13,8 @@ public interface CropRepository extends JpaRepository<Crop, Long> {
 
     List<Crop> findByType(PlantType type);
 
-    Crop findByName(String name);
+    Optional<Crop> findByName(String name);
 
-    Crop findByLatinName(String latinName);
+    Optional<Crop> findByLatinName(String latinName);
 
 }
