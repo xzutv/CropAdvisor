@@ -223,7 +223,6 @@ public class CropDataInitializer {
         crop.setType(type);
         crop.setRequirements(requirements);
         crop.setEnvironmentProfile(profile);
-        profile.setCrop(crop);
         return crop;
     }
 
