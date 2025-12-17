@@ -26,7 +26,6 @@ public class CropItemController {
 
     @GetMapping("/{id}")
     public CropItem getCropItem(@PathVariable Long id) {
-
         return cropItemService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CropItem not found"));
     }

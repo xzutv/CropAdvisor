@@ -35,7 +35,13 @@ public class CropClient {
     }
 
     public Crop getCropById(Long cropId) {
-        return client.get().uri("/crop/" + cropId).retrieve().body(Crop.class);
+        try {
+            return client.get().uri("/crop/" + cropId).retrieve().body(Crop.class);
+        } catch (org.springframework.web.client.HttpClientErrorException.NotFound e) {
+            return null;
+        } catch (org.springframework.web.client.HttpServerErrorException e) {
+            throw new IllegalStateException("Crop service returned 500 for cropId=" + cropId, e);
+        }
     }
 
     public Crop findCropByName(String cropName) {

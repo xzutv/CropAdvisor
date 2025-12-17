@@ -1,6 +1,7 @@
 package se.yrgo.growthservice.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import se.yrgo.growthservice.dao.LocalWeatherData;
 import se.yrgo.growthservice.data.CropItemRepository;
 import se.yrgo.growthservice.domain.advice.Advice;
@@ -20,40 +21,44 @@ public class AdviceService {
 
     private final WeatherService weatherService;
     private final CropService cropService;
+    private final CropItemService cropItemService;
     private final CropItemRepository cropItemRepository;
 
-    public AdviceService(WeatherService weatherService, CropService cropService, CropItemRepository cropItemRepository) {
+    public AdviceService(WeatherService weatherService, CropService cropService,
+                         CropItemService cropItemService, CropItemRepository cropItemRepository) {
         this.weatherService = weatherService;
         this.cropService = cropService;
+        this.cropItemService = cropItemService;
         this.cropItemRepository = cropItemRepository;
     }
 
+
     public List<List<Advice>> getAllAdvices() {
-        List<CropItem> items = cropItemRepository.findAll();
-        List<List<Advice>> allAdvices = new ArrayList<>();
-        for (CropItem item : items) {
-            allAdvices.add(getAdvicesForItem(item));
-        }
-        return allAdvices;
+        return cropItemRepository.findAll().stream()
+                .map(this::getAdvicesForItem)
+                .toList();
     }
 
 
     public List<Advice> getAdvicesForItem(CropItem item) {
-        Crop crop = cropService.getCropById(item.getCropId());
-
-        Location location = weatherService.getLocationByCityAndCountry(item.getCity(), item.getCountry());
-        if (location == null) {
-            throw new IllegalArgumentException(
-                    "CropItem " + item.getId() + " har ingen location i WeatherService för " +
-                            item.getCity() + ", " + item.getCountry()
+        Crop crop;
+        try {
+            crop = cropService.getCropById(item.getCropId());
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new IllegalStateException(
+                    "Invariant violation: CropItem refers to missing Crop id=" + item.getCropId()
             );
         }
 
-        LocalWeatherData weatherData = new LocalWeatherData(location.getCity(), location.getCountry());
-        List<Weather> weatherList = weatherService.getLocalWeather(weatherData);
-        Weather weather = weatherList.isEmpty() ? null : weatherList.get(0);
+        Location location = cropItemService.getLocationForItem(item);
 
-        return evaluate(crop, weather);
+        LocalWeatherData weatherData =
+                new LocalWeatherData(location.getCity(), location.getCountry());
+
+        List<Weather> weatherList = weatherService.getLocalWeather(weatherData);
+        Weather currentWeather = weatherList.isEmpty() ? null : weatherList.get(0);
+
+        return evaluate(crop, currentWeather);
     }
 
     private List<Advice> evaluate(Crop crop, Weather weather) {
@@ -69,14 +74,12 @@ public class AdviceService {
         BigDecimal wind = weather.getWind();
         int humidity = weather.getHumidity();
 
-        // Water advice
         if (rain.compareTo(BigDecimal.valueOf(crop.getRequirements().getWaterLitersPerWeek())) < 0) {
             advices.add(new Advice("Water your " + crop.getName(), true));
         } else {
             advices.add(new Advice(crop.getName() + " has enough water", false));
         }
 
-        // Temperature advice
         double minTemp = crop.getRequirements().getOptimalTempMin();
         double maxTemp = crop.getRequirements().getOptimalTempMax();
         double warningThreshold = 2.0;
@@ -97,7 +100,6 @@ public class AdviceService {
             }
         }
 
-        // Sun exposure advice
         SunExposure sun = crop.getEnviromentProfile().getSunExposure();
         switch (sun) {
             case FULL_SUN -> {
@@ -112,17 +114,14 @@ public class AdviceService {
             }
         }
 
-        // Wind advice
         if (wind.compareTo(BigDecimal.valueOf(20)) > 0) {
             advices.add(new Advice(crop.getName() + " may be affected by strong wind", true));
         }
 
-        // Humidity advice
         if (humidity < 30) {
             advices.add(new Advice(crop.getName() + " may need extra water due to low humidity", true));
         }
 
-        // Seasonal advice
         Month currentMonth = Month.of(weather.getTimestamp().getMonthValue());
         if (!isMonthInRange(currentMonth, crop.getEnviromentProfile().getPlantingSeason())) {
             advices.add(new Advice(crop.getName() + " is not in the optimal planting season", false));
