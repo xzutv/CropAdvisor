@@ -32,13 +32,16 @@ public class WeatherRestController {
         return locationRepository.findAll();
     }
 
+
+    // get all weather by location, returns empty result if no match is found
     @GetMapping("/weather-location")
     public List<Weather> getLocalWeather(@RequestParam String city, @RequestParam String country) {
-        Location location = locationRepository.findByCityAndCountry(city, country).getFirst();
+        Location location;
 
-        if (location == null) {
-            System.out.println("empty location");
-            return null;
+        if (locationRepository.findByCityAndCountry(city, country).isEmpty()) {
+            return List.of();
+        } else {
+            location = locationRepository.findByCityAndCountry(city, country).getFirst();
         }
 
         return weatherRepository.findByLocation(location);
