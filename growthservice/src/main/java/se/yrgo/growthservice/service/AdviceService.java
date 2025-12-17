@@ -100,7 +100,7 @@ public class AdviceService {
             }
         }
 
-        SunExposure sun = crop.getEnviromentProfile().getSunExposure();
+        SunExposure sun = crop.getEnvironmentProfile().getSunExposure();
         switch (sun) {
             case FULL_SUN -> {
                 if (clouds.compareTo(BigDecimal.valueOf(80)) > 0) {
@@ -123,10 +123,10 @@ public class AdviceService {
         }
 
         Month currentMonth = Month.of(weather.getTimestamp().getMonthValue());
-        if (!isMonthInRange(currentMonth, crop.getEnviromentProfile().getPlantingSeason())) {
+        if (!isMonthInRange(currentMonth, crop.getEnvironmentProfile().getPlantingSeason())) {
             advices.add(new Advice(crop.getName() + " is not in the optimal planting season", false));
         }
-        if (isMonthInRange(currentMonth, crop.getEnviromentProfile().getHarvestSeason())) {
+        if (isMonthInRange(currentMonth, crop.getEnvironmentProfile().getHarvestSeason())) {
             advices.add(new Advice("It's harvest time for " + crop.getName(), true));
         }
 

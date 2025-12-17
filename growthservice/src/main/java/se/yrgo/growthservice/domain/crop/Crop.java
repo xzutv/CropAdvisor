@@ -67,11 +67,11 @@ public class Crop {
         this.requirements = requirements;
     }
 
-    public EnvironmentProfile getEnviromentProfile() {
+    public EnvironmentProfile getEnvironmentProfile() {
         return environmentProfile;
     }
 
-    public void setEnviromentProfile(EnvironmentProfile environmentProfile) {
+    public void setEnvironmentProfile(EnvironmentProfile environmentProfile) {
         this.environmentProfile = environmentProfile;
     }
 }
