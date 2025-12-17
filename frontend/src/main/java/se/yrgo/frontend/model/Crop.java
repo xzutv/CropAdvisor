@@ -1,38 +1,22 @@
-package se.yrgo.growthservice.domain.crop;
-
-import jakarta.persistence.*;
-import se.yrgo.growthservice.domain.crop.enums.PlantType;
+package se.yrgo.frontend.model;
 
 public class Crop {
-
     private Long id;
-
     private String name;
     private String latinName;
-
-    private PlantType type;
-
+    private String type;
     private GrowthRequirements requirements;
-
     private EnvironmentProfile environmentProfile;
 
-    public Crop() {}
-
-    public Crop(Long id, String name, String latinName, PlantType type, GrowthRequirements requirements, EnvironmentProfile environmentProfile) {
-        this.id = id;
-        this.name = name;
-        this.latinName = latinName;
-        this.type = type;
-        this.requirements = requirements;
-        this.environmentProfile = environmentProfile;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public Crop() {
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -51,11 +35,11 @@ public class Crop {
         this.latinName = latinName;
     }
 
-    public PlantType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(PlantType type) {
+    public void setType(String type) {
         this.type = type;
     }
 

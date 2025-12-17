@@ -59,7 +59,7 @@ public class AdviceController {
         Weather currentWeather = weatherList.isEmpty() ? null : weatherList.get(0);
         List<Advice> advices = adviceService.getAdvicesForItem(item);
 
-        return new AdviceWithContextDTO(crop, currentWeather, advices);
+        return new AdviceWithContextDTO(item, crop, currentWeather, advices);
     }
 
     @GetMapping("/all-with-context")
@@ -78,7 +78,7 @@ public class AdviceController {
                     Weather currentWeather = weatherList.isEmpty() ? null : weatherList.get(0);
                     List<Advice> advices = adviceService.getAdvicesForItem(item);
 
-                    return Stream.of(new AdviceWithContextDTO(crop, currentWeather, advices));
+                    return Stream.of(new AdviceWithContextDTO(item, crop, currentWeather, advices));
                 })
                 .toList();
     }
