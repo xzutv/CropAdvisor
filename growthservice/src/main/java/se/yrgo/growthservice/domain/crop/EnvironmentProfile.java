@@ -1,23 +1,14 @@
-package se.yrgo.cropservice.entities;
+package se.yrgo.growthservice.domain.crop;
 
-import jakarta.persistence.*;
-import se.yrgo.cropservice.entities.enums.SoilType;
-import se.yrgo.cropservice.entities.enums.SunExposure;
+import se.yrgo.growthservice.domain.crop.enums.SoilType;
+import se.yrgo.growthservice.domain.crop.enums.SunExposure;
 
-@Entity
 public class EnvironmentProfile {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    //@OneToOne(mappedBy = "environmentProfile")
-    //private Crop crop;
 
-    @Enumerated(EnumType.STRING)
     private SoilType soilType;
-    
-    @Enumerated(EnumType.STRING)
+
     private SunExposure sunExposure;
 
     private double soilPhMin;
@@ -26,6 +17,17 @@ public class EnvironmentProfile {
     private String plantingSeason;
     private String harvestSeason;
 
+    public EnvironmentProfile() {}
+
+    public EnvironmentProfile(Long id, SoilType soilType, SunExposure sunExposure, double soilPhMin, double soilPhMax, String plantingSeason, String harvestSeason) {
+        this.id = id;
+        this.soilType = soilType;
+        this.sunExposure = sunExposure;
+        this.soilPhMin = soilPhMin;
+        this.soilPhMax = soilPhMax;
+        this.plantingSeason = plantingSeason;
+        this.harvestSeason = harvestSeason;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -34,14 +36,6 @@ public class EnvironmentProfile {
     public Long getId() {
         return id;
     }
-
-    //public void setCrop(Crop crop) {
-    //    this.crop = crop;
-    //}
-
-    //public Crop getCrop() {
-    //    return crop;
-    // }
 
     public SoilType getSoilType() {
         return soilType;

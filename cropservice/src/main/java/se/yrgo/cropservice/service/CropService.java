@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.yrgo.cropservice.data.CropRepository;
-import se.yrgo.cropservice.data.EnvoirmentProfileRepository;
 import se.yrgo.cropservice.entities.Crop;
 import se.yrgo.cropservice.entities.EnvironmentProfile;
 import se.yrgo.cropservice.entities.GrowthRequirements;
 import se.yrgo.cropservice.entities.enums.PlantType;
 import se.yrgo.cropservice.entities.enums.SoilType;
 import se.yrgo.cropservice.entities.enums.SunExposure;
+import se.yrgo.cropservice.exceptions.CropNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,30 +21,30 @@ public class CropService {
 
     private final CropRepository cropRepository;
     private final EnvironmentProfileService profileService;
-    private final GrowthRequirmentService requirmentService;
+    private final GrowthRequirementService requirmentService;
 
     @Autowired
-    public CropService(CropRepository cropRepository, EnvironmentProfileService profileService, GrowthRequirmentService requirmentService) {
+    public CropService(CropRepository cropRepository, EnvironmentProfileService profileService, GrowthRequirementService requirmentService) {
         this.cropRepository = cropRepository;
         this.profileService = profileService;
         this.requirmentService = requirmentService;
     }
 
     public boolean checkHeatRisk(Long cropId, double forecastMaxTemp) {
-        Crop crop = getCropById(cropId);
+        Crop crop = getCropById(cropId)
+                .orElseThrow(() -> new CropNotFoundException("Crop not found with id: " + cropId));
         return requirmentService.isHeatRisk(crop.getRequirements(), forecastMaxTemp);
     }
 
-    public Crop getCropById(Long id) {
-        return cropRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Crop not found with id: " + id));
+    public Optional<Crop> getCropById(Long id) {
+        return cropRepository.findById(id);
     }
 
     public List<Crop> getAllCrops() {
         return cropRepository.findAll();
     }
 
-    public Crop findCropByName(String name) {
+    public Optional<Crop> findCropByName(String name) {
         return cropRepository.findByName(name);
     }
 
@@ -62,7 +62,7 @@ public class CropService {
         crop.setName(name);
         crop.setLatinName(latinName);
         crop.setType(plantType);
-        crop.setEnvoirmentProfile(profile);
+        crop.setEnvironmentProfile(profile);
         crop.setRequirements(requirements);
 
         return cropRepository.save(crop);
@@ -82,7 +82,8 @@ public class CropService {
 
 
     public Crop updateCropBasicInfo(Long id, String name, String latinName, PlantType plantType) {
-        Crop crop = getCropById(id);
+        Crop crop = getCropById(id)
+                .orElseThrow(() -> new CropNotFoundException("Crop not found with id: " + id));
 
         if (name != null) {crop.setName(name);}
         if (latinName != null) {crop.setLatinName(latinName);}
@@ -92,12 +93,13 @@ public class CropService {
     }
 
     public Crop updateEnvironmentProfile(Long cropId, EnvironmentProfile update) {
-        Crop crop = getCropById(cropId);
+        Crop crop = getCropById(cropId)
+                .orElseThrow(() -> new CropNotFoundException("Crop not found with id: " + cropId));
 
-        if (crop.getEnvoirmentProfile() == null) {
-            crop.setEnvoirmentProfile(update);
+        if (crop.getEnvironmentProfile() == null) {
+            crop.setEnvironmentProfile(update);
         } else {
-            profileService.updateProfile(crop.getEnvoirmentProfile(), update);
+            profileService.updateProfile(crop.getEnvironmentProfile(), update);
         }
         return cropRepository.save(crop);
     }

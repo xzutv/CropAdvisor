@@ -1,31 +1,31 @@
-package se.yrgo.cropservice.entities;
+package se.yrgo.growthservice.domain.crop;
 
 import jakarta.persistence.*;
-import se.yrgo.cropservice.entities.enums.PlantType;
+import se.yrgo.growthservice.domain.crop.enums.PlantType;
 
-@Entity
 public class Crop {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String name;
     private String latinName;
 
-    @Enumerated(EnumType.STRING)
     private PlantType type;
 
-    @Embedded
     private GrowthRequirements requirements;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
-    orphanRemoval = true)
-    @JoinColumn(name = "environment_profile_id")
     private EnvironmentProfile environmentProfile;
 
     public Crop() {}
 
+    public Crop(Long id, String name, String latinName, PlantType type, GrowthRequirements requirements, EnvironmentProfile environmentProfile) {
+        this.id = id;
+        this.name = name;
+        this.latinName = latinName;
+        this.type = type;
+        this.requirements = requirements;
+        this.environmentProfile = environmentProfile;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -67,11 +67,11 @@ public class Crop {
         this.requirements = requirements;
     }
 
-    public EnvironmentProfile getEnvironmentProfile() {
+    public EnvironmentProfile getEnviromentProfile() {
         return environmentProfile;
     }
 
-    public void setEnvironmentProfile(EnvironmentProfile environmentProfile) {
+    public void setEnviromentProfile(EnvironmentProfile environmentProfile) {
         this.environmentProfile = environmentProfile;
     }
 }
