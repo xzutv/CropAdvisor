@@ -2,6 +2,8 @@ package se.yrgo.growthservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import se.yrgo.growthservice.client.WeatherClient;
 import se.yrgo.growthservice.data.CropItemRepository;
 import se.yrgo.growthservice.domain.crop.Crop;
@@ -27,20 +29,33 @@ public class CropItemService {
         return weatherClient.getAllLocations();
     }
 
+
     public CropItem createCropItem(Long cropId, String city, String country) {
+
         validateLocationExists(city, country);
 
-        Optional<CropItem> existing = cropItemRepository
-                .findByCropIdAndCityAndCountry(cropId, city, country);
-
-        if (existing.isPresent()) {
+        try {
+            cropService.getCropById(cropId);
+        } catch (HttpClientErrorException.NotFound e) {
             throw new IllegalArgumentException(
-                    "A CropItem with this crop and location already exists: id=" + existing.get().getId()
+                    "Cannot create CropItem: Crop does not exist (id=" + cropId + ")"
+            );
+        } catch (RestClientException e) {
+            throw new IllegalStateException(
+                    "Crop service unavailable", e
             );
         }
 
-        CropItem newItem = new CropItem(cropId, city, country);
-        return cropItemRepository.save(newItem);
+        Optional<CropItem> existing =
+                cropItemRepository.findByCropIdAndCityAndCountry(cropId, city, country);
+
+        if (existing.isPresent()) {
+            throw new IllegalArgumentException(
+                    "CropItem already exists for crop + location (id=" + existing.get().getId() + ")"
+            );
+        }
+
+        return cropItemRepository.save(new CropItem(cropId, city, country));
     }
 
     public List<CropItem> getAllCropItems() {
@@ -51,13 +66,30 @@ public class CropItemService {
         return cropItemRepository.findById(id);
     }
 
+
     public CropItem updateCropItem(Long id, Long cropId, String city, String country) {
+
         validateLocationExists(city, country);
 
+        try {
+            cropService.getCropById(cropId);
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new IllegalArgumentException(
+                    "Cannot update CropItem: Crop does not exist (id=" + cropId + ")"
+            );
+        } catch (RestClientException e) {
+            throw new IllegalStateException(
+                    "Crop service unavailable", e
+            );
+        }
+
         CropItem item = cropItemRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("CropItem not found"));
+                .orElseThrow(() ->
+                        new IllegalArgumentException("CropItem not found (id=" + id + ")")
+                );
 
         boolean changed = false;
+
         if (!item.getCity().equals(city)) {
             item.setCity(city);
             changed = true;
@@ -72,7 +104,9 @@ public class CropItemService {
         }
 
         if (!changed) {
-            throw new IllegalArgumentException("No changes applied, CropItem already has these values");
+            throw new IllegalArgumentException(
+                    "No changes detected – update is idempotent"
+            );
         }
 
         return cropItemRepository.save(item);

@@ -1,5 +1,6 @@
 package se.yrgo.growthservice.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import se.yrgo.growthservice.client.CropClient;
 import se.yrgo.growthservice.dao.CreateCropRequest;
@@ -34,8 +35,15 @@ public class CropService {
         return cropClient.createDefaultCrop(request);
     }
 
-    public Crop getCropById(Long cropId) {
-        return cropClient.getCropById(cropId);
+
+    public Crop getCropById(Long id) {
+        Crop crop = cropClient.getCropById(id);
+        if (crop == null) {
+            throw new IllegalStateException(
+                    "Invariant violation: Crop does not exist, id=" + id
+            );
+        }
+        return crop;
     }
 
     public Optional<Crop> findCropByName(String name) {
