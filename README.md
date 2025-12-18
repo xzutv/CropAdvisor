@@ -11,6 +11,7 @@
 3. Have fun
 
 **ENDPOINTS**
+
 Weatherservice - port 8082
 1. Find all locations:
 localhost:8082/locations
