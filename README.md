@@ -12,172 +12,130 @@
 
 ### Endpoints
 
-#### 🌱Cropservice (Port 8081)
+  ---                                                                                                                                                                   
+### 🌱 Cropservice (Port 8081)
 
-**Hämta all crops**
+GET - Hämta alla crops
 
-GET http://localhost:8081/api
+http GET http://localhost:8081/api
 
-**Sök crops efter planttyp**
+GET - Sök crops efter planttyp (RequestParam → URI)
 
-http GET http://localhost:8081/api/search type==VEGETABLE
-**Andra värden: FRUIT, HERB, FLOWER**
+http GET http://localhost:8081/api/search?type=VEGETABLE                                                                                                              
+http GET http://localhost:8081/api/search?type=FRUIT                                                                                                                  
+http GET http://localhost:8081/api/search?type=HERB
 
-**Hämta crop via ID**
+GET - Hämta crop via ID (PathVariable)
 
 http GET http://localhost:8081/api/crop/1
 
-**Hämta crop via namn**
+GET - Hämta crop via namn (PathVariable)
 
 http GET http://localhost:8081/api/crop/name/Tomato
 
-**Skapa ny crop med default-profil**
+POST - Skapa ny crop med default-profil (RequestBody → JSON)
 
-http POST http://localhost:8081/api/create-default
-
-{
-name="Gurka",                                                                                                                                         
-latinName="Cucumis sativus",                                                                                                                                 
-type="VEGETABLE",                                                                                                                                                
-soilType="LOAM",                                                                                                                                            
-sunExposure="FULL_SUN"
+http POST http://localhost:8081/api/create-default \                                                                                                                  
+{                                                                                                                                
+"name": "Gurka",                                                                                                                                                    
+"latinName": "Cucumis sativus",                                                                                                                                     
+"type": "VEGETABLE",                                                                                                                                                
+"soilType": "LOAM",                                                                                                                                                 
+"sunExposure": "FULL_SUN"                                                                                                                                           
 }
 
-**Andra Enum-värden:**
-- PlantType: VEGETABLE, FRUIT, HERB, FLOWER
-- SoilType: CLAY, SAND, LOAM, SILT, CHALK, PEAT
-- SunExposure: FULL_SUN, PARTIAL_SHADE, FULL_SHADE
+Enum-värden för CreateCropRequest:
+- type: VEGETABLE, FRUIT, HERB, FLOWER
+- soilType: CLAY, SAND, LOAM, SILT, CHALK, PEAT
+- sunExposure: FULL_SUN, PARTIAL_SHADE, FULL_SHADE
 
   ---                                                                                                                                                                   
-#### ☀️ Weatherservice (Port 8082)
+☀️ Weatherservice (Port 8082)
 
-**Hämta all väderdata**
+GET - Hämta all väderdata
 
 http GET http://localhost:8082/weather
 
-**Hämta alla platser**
+GET - Hämta alla platser
 
 http GET http://localhost:8082/locations
 
-**Hämta väder för specifik plats**
+GET - Hämta väder för specifik plats (RequestParam → URI)
 
-http GET http://localhost:8082/weather-location 
-
-city==Stockholm 
-country==Sweden
-
-http GET http://localhost:8082/weather-location 
-
-{
-city==London 
-country==UK
-}
+http GET "http://localhost:8082/weather-location?city=Stockholm&country=Sweden"                                                                                       
+http GET "http://localhost:8082/weather-location?city=London&country=UK"
                                                                                                                                                                         
 ---                                                                                                                                                                   
-#### 🌿 Growthservice (Port 8083)
+### 🌿 Growthservice (Port 8083)
 
-#### Crop items endpoints:
+CropItem Endpoints
 
-**Hämta alla crop items**
+GET - Hämta alla crop items
 
 http GET http://localhost:8083/api/cropitem
 
-**Skapa ny crop item**
+POST - Skapa ny crop item (RequestBody → JSON)
 
-http POST http://localhost:8083/api/cropitem 
-{
-"cropId": 1,                                                                                                                                                     
-"city": "Gothenburg",                                                                                                                                         
-"country": "Sweden"
+http POST http://localhost:8083/api/cropitem \                                                                                                                        
+{                                                                                                                                
+"cropId": 1,                                                                                                                                                        
+"city": "Stockholm",                                                                                                                                                
+"country": "Sweden"                                                                                                                                                 
 }
 
-http POST http://localhost:8083/api/cropitem
-{
-"cropId": 2,                                                                                                                                                      
+http POST http://localhost:8083/api/cropitem \                                                                                                                        
+{                                                                                                                                
+"cropId": 2,                                                                                                                                                        
 "city": "London",                                                                                                                                                   
-"country": "UK"
+"country": "UK"                                                                                                                                                     
 }
 
-**Hämta crop item via ID**
+GET - Hämta crop item via ID (PathVariable)
 
 http GET http://localhost:8083/api/cropitem/1
 
-**Uppdatera crop item**
+PUT - Uppdatera crop item (RequestBody → JSON)
 
-http PUT http://localhost:8083/api/cropitem/1
-{
-"cropId": 1,                                                                                                                                                         
-"city": "Göteborg",                                                                                                                                                
-"country": "Sweden"
+http PUT http://localhost:8083/api/cropitem/1 \                                                                                                                       
+{                                                                                                                                
+"cropId": 1,                                                                                                                                                        
+"city": "Göteborg",                                                                                                                                                 
+"country": "Sweden"                                                                                                                                                 
 }
 
-**Ta bort crop item**
+DELETE - Ta bort crop item (PathVariable)
 
 http DELETE http://localhost:8083/api/cropitem/1
 
-**Hämta crop item via crop ID**
+GET - Hämta crop item via crop ID (PathVariable)
 
 http GET http://localhost:8083/api/cropitem/by-crop/1
 
-**Hämta alla locations**
+Advice Endpoints (Alla är GET med PathVariable eller ingen parameter)
 
-http GET http://localhost:8083/api/location
-
-### Advice Endpoints:
-
-**Hämta alla råd**
+GET - Hämta alla råd
 
 http GET http://localhost:8083/api/advice
 
-**Hämta råd för specifik crop item**
+GET - Hämta råd för specifik crop item (PathVariable)
 
 http GET http://localhost:8083/api/advice/1
 
-**Hämta råd med kontext (crop, väder, location)**
+GET - Hämta råd med kontext (PathVariable)
 
 http GET http://localhost:8083/api/advice/1/context
 
-**Hämta alla råd med kontext**
+GET - Hämta alla råd med kontext
 
 http GET http://localhost:8083/api/advice/all-with-context
 
-#### Crop Endpoints (via Growthservice):
+Crop Endpoints (GET med PathVariable)
 
-**Hämta alla crops**
+GET - Hämta alla crops
 
 http GET http://localhost:8083/api/crop
 
-**Hämta crop via ID**
+GET - Hämta crop via ID
 
-http GET http://localhost:8083/api/crop/1
-                                                                                                                                                                        
----                                                                                                                                                                   
-#### 🖥️ Frontend (Port 8080)
-
-**Visa startsida**
-
-http GET http://localhost:8080/garden
-
-**Lägg till crop (form-data)**
-
-http --form POST http://localhost:8080/garden/add \                                                                                                                   
-cropId=1 \                                                                                                                                                          
-city="Stockholm" \                                                                                                                                                  
-country="Sweden"
-
-**Visa detaljer för crop item**
-
-http GET http://localhost:8080/garden/detail/1
-
-**Ta bort crop item**
-
-http --form POST http://localhost:8080/garden/delete/1
-                                                                                                                                                                        
----                                                                                                                                                                   
-📋 Sammanfattning
-
-Tjänster:
-- Cropservice (8081): Hanterar crop-definitioner och profiler
-- Weatherservice (8082): Hämtar väderdata för olika platser
-- Growthservice (8083): Kombinerar crops, väder och ger odlingsråd
-- Frontend (8080): Web-gränssnitt för användaren 
+http GET http://localhost:8083/api/crop/1                                                                                                                             
+                                             
