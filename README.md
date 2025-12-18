@@ -15,7 +15,7 @@
 Weatherservice - port 8082
 1. Find all locations:
 localhost:8082/locations
-2. Find all weather:
+3. Find all weather:
 localhost:8082/weather
-3. Find weather by location (only has Gothenburg, Sweden)
+4. Find weather by location (only has Gothenburg, Sweden):
 localhost:8082/weather-location?city=Gothenburg&country=Sweden
