@@ -62,8 +62,8 @@ http GET http://localhost:8082/locations
 
 GET - Hämta väder för specifik plats (RequestParam → URI)
 
-http GET "http://localhost:8082/weather-location?city=Stockholm&country=Sweden"                                                                                       
-http GET "http://localhost:8082/weather-location?city=London&country=UK"
+http GET "http://localhost:8082/weather-location?city=Gothenburg&country=Sweden"                                                                                       
+
                                                                                                                                                                         
 ---                                                                                                                                                                   
 ### 🌿 Growthservice (Port 8083)
